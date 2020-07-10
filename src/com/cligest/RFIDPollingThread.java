@@ -2,12 +2,16 @@ package com.cligest;
 
 import com.sun.security.auth.NTSidGroupPrincipal;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class RFIDPollingThread implements Runnable {
 
-    public static final int THREAD_SLEEP_MS = 100;
+    public static final int                 THREAD_SLEEP_MS = 100;
+    public static final int                 READER_ENTERING = 0;
+    public static final int                 READER_EXITING = 1;
+    public static final String              DATE_FORMAT = "yyyyMMdd_HHmmss";
 
-    public static final int READER_ENTERING = 0;
-    public static final int READER_EXITING = 1;
 
     private Thread thisThread;
 
@@ -57,16 +61,24 @@ public class RFIDPollingThread implements Runnable {
     private void processCard (String cardUID) {
         // check with database that card is valid
 
+
         // temporary code
         timeSheetGui.setEmployeeName(cardUID);
 
+        String action = null;
         if (readerID == READER_ENTERING) {
             // employee is entering
-            timeSheetGui.setTitle("ENTRADA");
+            action = "ENTERING";
+
+            timeSheetGui.setTitle(action);
         } else {
             // employee is exiting
-            timeSheetGui.setTitle("SAÍDA");
+            action = "EXITING";
         }
+        timeSheetGui.setTitle(action);
+
+        // take a photo
+        timeSheetGui.takePhoto(cardUID + "_" + action + "_" + (new SimpleDateFormat(DATE_FORMAT)).format(new Date()));
 
         timeSheetGui.pauseForNextCard();
     }
