@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="nfctools-api-1.0.M8">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/nfctools-api-1.0.M8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/nfctools-core-1.0.M8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/nfctools-ndef-1.0.M8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

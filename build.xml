@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<project name="TimeSheet" default="info"  basedir=".">
+
+    <!-- set global properties for this build -->
+    <property name="src" location="src" />
+    <property name="build" location="out/production/TimeSheet" />
+    <property name="dist" location="build" />
+    <property name="lib" location="lib" />
+    <property name="version" value="1.0" />
+    <property name="mainclass" value="com.cligest.Main"/>
+
+    <target name="info">
+        <echo>Ant Script for build, dist and running TimeSheet.</echo>
+    </target>
+
+    <target name="distribution" depends="">
+        <buildnumber />
+
+        <delete file="${lib}/${ant.project.name}.jar"/>
+        <mkdir dir="${build}/META-INF" />
+
+        <manifest file="${build}/META-INF/MANIFEST.MF">
+            <attribute name="Main-Class" value="${mainclass}"/>
+        </manifest>
+
+        <!-- Put everything in ${build} into the MyApplication-${version}.${build.number}.jar -->
+        <property name="build.jar.filename" value="${dist}/TimeSheet_${version}.${build.number}.jar"/>
+        <jar manifest="${build}/META-INF/MANIFEST.MF" destfile="${build.jar.filename}" basedir="${build}" />
+        <copy file="${build.jar.filename}" tofile="${lib}/${ant.project.name}.jar"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}" />
+        <delete file="${lib}/${ant.project.name}.jar"/>
+    </target>
+
+    <target name="setup">
+        <path id="nfctools">
+            <fileset dir="${lib}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </path>
+
+        <pathconvert property="nfctoolspath" refid="nfctools"/>
+    </target>
+
+    <target name="build" depends="clean,setup" >
+        <mkdir dir="${build}"/>
+        <javac srcdir="${src}"
+               destdir="${build}"
+               classpathref="nfctools"
+        />
+    </target>
+
+    <target name="run" depends="setup">
+        <echo>classpath: ${nfctoolspath}</echo>
+        <echo>classname with main(): ${mainclass}</echo>
+        <java classpathref="nfctools"
+                classname="${mainclass}"
+        />
+    </target>
+
+    <target name="demo" depends="setup">
+        <java classpathref="nfctools"
+              classname="com.cligest.TestDialog"/>
+    </target>
+
+    <target name="all" depends="build,distribution"/>
+
+
+
+</project>

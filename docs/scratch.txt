@@ -1,0 +1,26 @@
+[java] S0|B0 Key: FFFFFFFFFFFF [Manu ] [4CC7373D81080400016F016D4568F81D]
+
+https://stackoverflow.com/questions/30101009/how-to-get-rfid-tag-from-acs122u-nfc
+
+
+   // Send test command
+   ResponseAPDU response = channel.transmit(new CommandAPDU( new byte[] { (byte) 0xFF, (byte) 0xCA, (byte) 0x00, (byte) 0x00, (byte) 0x00 }));
+   System.out.println("Response: " + response.toString());
+
+   if (response.getSW1() == 0x63 && response.getSW2() == 0x00)  System.out.println("Failed");
+
+
+
+Actually the "full" answer is to send "FF 00 52 00 00" to switch the buzzer off and "FF 00 52 FF 00" to switch it back on again.
+
+Next steps:
+
+ - Turn off red light and green light when paused??
+
+ - connect to database
+
+ - take photo
+
+ - sounds for entering and exiting
+
+

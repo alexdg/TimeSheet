@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="nfctools-examples">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/nfctools-examples.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
