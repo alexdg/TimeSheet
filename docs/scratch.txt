@@ -24,3 +24,23 @@ Next steps:
  - sounds for entering and exiting
 
 
+»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+Tabela: EMPLOYEE_CARD
+Campos: ID_EMPLOYEE, EMPLOYEE_NAME, ID_CARD (char[8]), CARD_STATE [int]
+Descrição: Esta tabela serve para juntar ID do Funcionário a um ID Cartão e um campo que indica se o cartão está activo no sistema ou não ( 0 - Inactivo, 1 - Activo; e poderemos adicionar mais estados no futuro, tipo: Perdido, Suspenso, etc). Assim é possivel um funcionário ter mais do que um cartão associado (eventualmente até o telemóvel com NFC), além de permitir consultar o histórico mesmo que ele perca o cartão e tenha outro adicionado para substituir (ou temporário).
+
+Tabela: CARD_ACTION_LOG
+Campos: ID_CARD, ID_EMPLOYEE, DATETIME, ID_DEVICE, ID_ACTION [int], IMAGE_FILE (string)
+Descrição: Registo de acções de entrada ou saída de um cartão válido existente no sistema. ACTION ( 0 = entrada, 1 =saída, 2 - tentativa não autorizada etc...). IMAGE_FILE é o nome do ficheiro da foto tirada.
+
+Tabela: TIMESHEET_DEVICES
+Campos: ID_DEVICE, ID_LOCATION [int], DESCRIPTION [string]
+Descrição: Esta tabela serve para sabermos quantos Terminais temos e onde estão colocadas localizados. ID_LOCATION indica a unidade da Cligest.
+
+Tabela: CARD_STATE_LOG
+Campos: ID_CARD, ID_SEQ, DATETIME, CARD_STATE [int], ID_EMPLOYEE, DESCRIPTION [string]
+Descrição: Esta tabela serve para guardar o histórico das mudanças feitas nos cartões. Pois caso um funcionário perca um cartão e precise de um temporariamente para poder picar o ponto, a DIOM pode emitir um cartão temporário para o efeito que poderá ser reutilizado.
+
+e também teremos as tabelas para guardar os descritivos dos ID_ACTION  e ID_LOCATION disponíveis para futuras alterações etc.
+
