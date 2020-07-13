@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Jul 11, 2020 at 03:13 PM
+-- Generation Time: Jul 13, 2020 at 02:18 PM
 -- Server version: 8.0.19
 -- PHP Version: 7.4.4
 
@@ -24,10 +24,55 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `card_action_log`
+-- Table structure for table `actions`
 --
 
-CREATE TABLE `card_action_log` (
+CREATE TABLE `actions` (
+  `id_action` int NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `card_states`
+--
+
+CREATE TABLE `card_states` (
+  `id_card_state` int NOT NULL,
+  `description` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employees`
+--
+
+CREATE TABLE `employees` (
+  `id_employee` int NOT NULL,
+  `employee_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `locations`
+--
+
+CREATE TABLE `locations` (
+  `id_location` int NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `place` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log_card_action`
+--
+
+CREATE TABLE `log_card_action` (
   `id_card` varchar(8) NOT NULL,
   `id_employee` int NOT NULL,
   `datetime` datetime NOT NULL,
@@ -39,52 +84,16 @@ CREATE TABLE `card_action_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `card_state_log`
+-- Table structure for table `log_card_state`
 --
 
-CREATE TABLE `card_state_log` (
+CREATE TABLE `log_card_state` (
   `id_card` varchar(8) NOT NULL,
   `id_seq` int NOT NULL,
   `datetime` datetime NOT NULL,
   `card_state` int NOT NULL,
   `id_employee` int NOT NULL,
   `description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `define_actions`
---
-
-CREATE TABLE `define_actions` (
-  `id_action` int NOT NULL,
-  `description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `define_locations`
---
-
-CREATE TABLE `define_locations` (
-  `id_location` int NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `place` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `employee_card`
---
-
-CREATE TABLE `employee_card` (
-  `id_employee` int NOT NULL,
-  `employee_name` varchar(255) NOT NULL,
-  `id_card` varchar(8) NOT NULL,
-  `card_state` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -104,22 +113,51 @@ CREATE TABLE `timesheet_devices` (
 --
 
 --
--- Indexes for table `define_actions`
+-- Indexes for table `actions`
 --
-ALTER TABLE `define_actions`
+ALTER TABLE `actions`
   ADD PRIMARY KEY (`id_action`);
 
 --
--- Indexes for table `define_locations`
+-- Indexes for table `card_states`
 --
-ALTER TABLE `define_locations`
+ALTER TABLE `card_states`
+  ADD PRIMARY KEY (`id_card_state`);
+
+--
+-- Indexes for table `employees`
+--
+ALTER TABLE `employees`
+  ADD PRIMARY KEY (`id_employee`);
+
+--
+-- Indexes for table `locations`
+--
+ALTER TABLE `locations`
   ADD PRIMARY KEY (`id_location`);
 
 --
--- Indexes for table `employee_card`
+-- Indexes for table `log_card_state`
 --
-ALTER TABLE `employee_card`
-  ADD PRIMARY KEY (`id_employee`);
+ALTER TABLE `log_card_state`
+  ADD KEY `card_state_log_ibfk_1` (`id_employee`),
+  ADD KEY `id_card` (`id_card`,`id_seq`,`datetime`,`card_state`,`id_employee`);
+
+--
+-- Indexes for table `timesheet_devices`
+--
+ALTER TABLE `timesheet_devices`
+  ADD PRIMARY KEY (`id_device`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `log_card_state`
+--
+ALTER TABLE `log_card_state`
+  ADD CONSTRAINT `log_card_state_ibfk_1` FOREIGN KEY (`id_employee`) REFERENCES `employees` (`id_employee`) ON DELETE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
