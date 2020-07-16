@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class RFIDPollingThread implements Runnable {
 
-    public static final int                 THREAD_SLEEP_MS = 100;
+    public static  int                      THREAD_SLEEP_MS = 100;
     public static final int                 READER_ENTERING = 0;
     public static final int                 READER_EXITING = 1;
     public static final String              DATE_FORMAT = "yyyyMMdd_HHmmss";
@@ -18,19 +18,27 @@ public class RFIDPollingThread implements Runnable {
     private AcrDevice readerDevices;
 
     public RFIDPollingThread (TimeSheetGui tsGui, int rID, AcrDevice rDevices) {
+        this.loadProperties();
+
         thisThread = new Thread (this, "Reader " + rID);
 
         timeSheetGui = tsGui;
         readerID  = rID;
         readerDevices = rDevices;
 
-        System.out.println("RFIDPollingThread.RFIDPollingThread: created " + rID);
+        Main.log.debug("RFIDPollingThread.RFIDPollingThread: created " + rID);
 
         thisThread.start();
     }
 
+    private void loadProperties() {
+        Main.log.debug("RFIDPollingThread.loadProperties");
+
+        THREAD_SLEEP_MS = Integer.parseInt(Main.properties.getProperty("THREAD_SLEEP_MS"));
+    }
+
     public void run() {
-        System.out.println("RFIDPollingThread.run: id " + readerID);
+        Main.log.info("RFIDPollingThread.run: id " + readerID);
         String cardUID = null;
         while (true) {
 
@@ -41,7 +49,7 @@ public class RFIDPollingThread implements Runnable {
                 if (cardUID.length() == 12) {
                     if (!timeSheetGui.isPausedState()) {
                         // we got a card ID
-                        System.out.println("RFIDPollingThread.run: we got a card and system is not paused " + cardUID);
+                        Main.log.debug("RFIDPollingThread.run: we got a card and system is not paused " + cardUID);
                         processCard(cardUID);
                     }
                 }
@@ -50,8 +58,7 @@ public class RFIDPollingThread implements Runnable {
             try {
                 Thread.sleep(THREAD_SLEEP_MS);
             } catch (InterruptedException e) {
-                System.out.println("RFIDPollingThread.run: thread error");
-                e.printStackTrace();
+                Main.log.error("RFIDPollingThread.run: thread error", e);
             }
         }
     }

@@ -56,13 +56,15 @@
         <echo>classpath: ${nfctoolspath}</echo>
         <echo>classname with main(): ${mainclass}</echo>
         <java classpathref="nfctools"
-                classname="${mainclass}"
-        />
+                classname="${mainclass}">
+            <arg value="timesheet_device.properties"/>
+        </java>
     </target>
 
     <target name="demo" depends="setup">
         <java classpathref="nfctools"
-              classname="com.cligest.TestDialog"/>
+              classname="com.cligest.TestDialog">
+        </java>
     </target>
 
     <target name="all" depends="build,distribution"/>

@@ -27,7 +27,7 @@ public class Acr122Device extends AcsTerminal {
 
     @Override
     public void open() throws IOException {
-        System.out.println("Opening device");
+        Main.log.info("Opening device");
         super.open();
     }
 
@@ -37,13 +37,13 @@ public class Acr122Device extends AcsTerminal {
      * @param listener a listener
      */
     public void listen(MfCardListener listener) throws IOException {
-        System.out.println("Listening for cards...");
+        Main.log.info("Listening for cards...");
         readerWriter.setCardListener(listener);
     }
 
     @Override
     public void close() throws IOException {
-        System.out.println("Closing device");
+        Main.log.info("Closing device");
         readerWriter.removeCardListener();
         super.close();
     }

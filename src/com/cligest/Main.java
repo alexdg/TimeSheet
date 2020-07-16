@@ -1,14 +1,14 @@
 package com.cligest;
 
+import org.apache.log4j.Logger;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class Main {
 
     public static Properties properties;
+    public static Logger log = Logger.getLogger(Main.class.getName());
 
     public static int MAIN_THREAD_SLEEP_MS = 1500; // default
     public static int DEVICE_ID = 0;
@@ -20,22 +20,22 @@ public class Main {
     }
 
     public static void loadProperties() {
-        System.out.println("Main.loadProperties");
+        log.debug("Main.loadProperties");
 
         MAIN_THREAD_SLEEP_MS = Integer.parseInt(Main.properties.getProperty("MAIN_THREAD_SLEEP_MS"));
         DEVICE_ID = Integer.parseInt(Main.properties.getProperty("DEVICE_ID"));
     }
 
     public static void main(String[] args) {
-        System.out.println("Main.main: start");
+        // start logging
+
+        log.debug("Main.main: start");
 
         // check for properties file
-
         if (args.length == 0) {
             System.out.println("Main.main: missing properties filename is argument");
             System.exit(1);
         }
-
         try {
             loadPropertiesFile(args[0]);
         } catch (IOException e){
@@ -43,6 +43,8 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        loadProperties();
+        log.debug("DEVICE_ID = " + DEVICE_ID);
 
         // initiate Card Readers
         AcrDevice devices = new AcrDevice();
@@ -71,11 +73,11 @@ public class Main {
         }
         catch(InterruptedException e)
         {
-            System.out.println("Main.main: main thread interrupted");
+            log.debug("Main.main: main thread interrupted");
             e.printStackTrace();
         }
-        System.out.println("Main.main: main thread run is over");
+        log.debug("Main.main: main thread run is over");
 
-        System.out.println("Main.main: end");
+        log.debug("Main.main: end");
     }
 }

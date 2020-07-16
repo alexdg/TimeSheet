@@ -21,7 +21,7 @@ public class AcrDevice {
     public static final int RFID_READERS = 2; // you need 2 of them for this app to work.
 
     public static       int WAIT_FOR_CARD_PRESENT_MS = 500; // default
-    public static final int WAIT_FOR_CARD_ABSENT_MS = 5000;
+    public static final int WAIT_FOR_CARD_ABSENT_MS = 5000; // not used
 
     public static final byte[] APDU_BUZZER_OFF = {(byte) 0xFF, (byte) 0x00, (byte) 0x52, (byte) 0x00, (byte) 0x00};
     public static final byte[] APDU_BUZZER_ON = {(byte) 0xFF, (byte) 0x00, (byte) 0x52, (byte) 0xFF, (byte) 0x00};
@@ -55,7 +55,7 @@ public class AcrDevice {
     }
 
     public void loadProperties() {
-        System.out.println("AcrDevice.loadProperties");
+        Main.log.debug("AcrDevice.loadProperties");
 
         WAIT_FOR_CARD_PRESENT_MS = Integer.parseInt(Main.properties.getProperty("WAIT_FOR_CARD_PRESENT_MS"));
     }
@@ -71,13 +71,13 @@ public class AcrDevice {
             CardTerminal terminal;
             for (Iterator i$ = terminals.iterator(); i$.hasNext(); ) {
                 terminal = (CardTerminal) i$.next();
-                System.out.println("terminal.getName() = " + terminal.getName());
+                Main.log.info("terminal.getName() = " + terminal.getName());
                 devs[cnt] = new Acr122ReaderWriter(new Acr122Device(terminal));
                 devsTerminal[cnt] = terminal;
                 cnt++;
             }
         } catch (CardException var5) {
-            var5.printStackTrace();
+            Main.log.error("AcrDevice.getAvailableTerminals: ",var5);
         }
     }
 
@@ -91,16 +91,16 @@ public class AcrDevice {
             if (devsTerminal[deviceNumber].waitForCardPresent(WAIT_FOR_CARD_PRESENT_MS)) {
 
                 Card newCard = devsTerminal[deviceNumber].connect("*");
-                System.out.println("newCard = " + newCard);
+                Main.log.debug("newCard = " + newCard);
 
                 result = sendAPDU(newCard, APDU_READ_RFID_UID);
 
-                System.out.println("convertToHex(responseAPDU.getBytes() = " + result);
+                Main.log.info("convertToHex(responseAPDU.getBytes() = " + result);
 
 
                 // should we turn the buzzer off?
                 if (sendBuzzerOff[deviceNumber]) {
-                    System.out.println("AcrDevice.getCardUID: turn off buzzer for " + deviceNumber);
+                    Main.log.info("AcrDevice.getCardUID: turn off buzzer for " + deviceNumber);
                     try {
                         sendAPDU(newCard, APDU_BUZZER_OFF);
                     } catch (CardException e) {
@@ -117,7 +117,7 @@ public class AcrDevice {
                 newCard.disconnect(false);
             }
         } catch (CardException e) {
-            e.printStackTrace();
+            Main.log.error("AcrDevice.getCardUID", e);
         }
 
         return result;
@@ -135,7 +135,7 @@ public class AcrDevice {
 
         if (responseAPDU.getSW1() == APDU_FAIL_SW1 && responseAPDU.getSW2() == APDU_FAIL_SW2) {
             // message OK
-            System.out.println("AcrDevice.sendAPDU: message failed");
+            Main.log.error("AcrDevice.sendAPDU: message failed");
         } else {
             // message NOT OK
             result = convertToHex(responseAPDU.getBytes());
@@ -149,35 +149,32 @@ public class AcrDevice {
         try {
             devs[0].waitForCard(new cardListener(), 10000);
         } catch (IOException e) {
-            System.out.println("AcrDeviceTest.startTerminals: exception");
-            e.printStackTrace();
+            Main.log.error("AcrDeviceTest.startTerminals: exception", e);
         }
-        System.out.println("AcrDeviceTest.startTerminals: end");
+        Main.log.debug("AcrDeviceTest.startTerminals: end");
     }
 
     private class cardListener implements MfCardListener {
         @Override
         public void cardDetected(MfCard mfCard, MfReaderWriter mfReaderWriter) throws IOException {
 
-            System.out.println("mfCard.getTagType() = " + mfCard.getTagType());
+            Main.log.debug("mfCard.getTagType() = " + mfCard.getTagType());
 
-            //System.out.println("mfCard.getId() = " + mfCard.getId());
+            Main.log.debug("mfCard.getGeneralBytes().length = " + mfCard.getGeneralBytes().length);
 
-            System.out.println("mfCard.getGeneralBytes().length = " + mfCard.getGeneralBytes().length);
+            Main.log.debug("mfCard.getGeneralBytes() = " + convertToHex(mfCard.getGeneralBytes()));
 
-            System.out.println("mfCard.getGeneralBytes() = " + convertToHex(mfCard.getGeneralBytes()));
-
-            System.out.println("mfCard.toString() = " + mfCard.toString());
+            Main.log.debug("mfCard.toString() = " + mfCard.toString());
 
             MfNdefReader ndefReader = new MfNdefReader(mfReaderWriter, decoder);
 
             try {
                 List<Record> records = ndefReader.readNdefMessage(mfCard);
                 for (Record record : records) {
-                    System.out.println("record.toString() = " + record.toString());
+                    Main.log.debug("record.toString() = " + record.toString());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Main.log.error("cardListener.cardDetected", e);
             }
 
         }

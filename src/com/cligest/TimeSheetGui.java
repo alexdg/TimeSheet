@@ -30,7 +30,7 @@ public class TimeSheetGui {
     private JTextField jTextFieldTitle, jTextFieldEmployeeName, jTextFieldDateTime;
 
     public TimeSheetGui () {
-        System.out.println("TimeSheetGui.TimeSheetGui: constructor");
+        Main.log.debug("TimeSheetGui.TimeSheetGui: constructor");
         loadProperties();
 
         jFrame = new JFrame("TimeSheet");
@@ -70,7 +70,7 @@ public class TimeSheetGui {
     }
 
     public void loadProperties() {
-        System.out.println("TimeSheetGui.loadProperties");
+        Main.log.debug("TimeSheetGui.loadProperties");
 
         TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = Long.parseLong(Main.properties.getProperty("TIME_TO_WAIT_UNTIL_NEXT_CARD_MS"));
         IMAGE_FILESYSTEM_PATH = Main.properties.getProperty("IMAGE_FILESYSTEM_PATH");
@@ -97,8 +97,7 @@ public class TimeSheetGui {
         try {
             Thread.sleep(TIME_TO_WAIT_UNTIL_NEXT_CARD_MS);
         } catch (InterruptedException e) {
-            System.out.println("TimeSheetGui.pauseForNextCard: error");
-            e.printStackTrace();
+            Main.log.error("TimeSheetGui.pauseForNextCard: error", e);
         }
         clearScreen();
         setPausedState(false);
@@ -119,12 +118,11 @@ public class TimeSheetGui {
     }
 
     public void takePhoto(String filename) {
-        System.out.println("TimeSheetGui.takePhoto: " + filename);
+        Main.log.debug("TimeSheetGui.takePhoto: " + filename);
         try {
             piCamera.takeStill(filename + ".jpg");
         } catch (Exception e) {
-            System.out.println("TimeSheetGui.takePhoto: error");
-            e.printStackTrace();
+            Main.log.error("TimeSheetGui.takePhoto: error", e);
         }
     }
 
@@ -132,8 +130,7 @@ public class TimeSheetGui {
         try {
             piCamera = new RPiCamera(IMAGE_FILESYSTEM_PATH);
         } catch (FailedToRunRaspistillException e) {
-            System.out.println("TimeSheetGui.prepCamera: no camera");
-            e.printStackTrace();
+            Main.log.error("TimeSheetGui.prepCamera: no camera", e);
         }
 
         piCamera.setWidth(IMAGE_WIDTH);
