@@ -1,5 +1,6 @@
 package com.cligest;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,18 +29,18 @@ public class Main {
 
     public static void main(String[] args) {
         // start logging
-
-        log.debug("Main.main: start");
+        BasicConfigurator.configure();
+        log.info("Main.main: start");
 
         // check for properties file
         if (args.length == 0) {
-            System.out.println("Main.main: missing properties filename is argument");
+            Main.log.debug("Main.main: missing properties filename is argument");
             System.exit(1);
         }
         try {
             loadPropertiesFile(args[0]);
         } catch (IOException e){
-            System.out.println("Main.main: error loading properties file: " + args[0]);
+            Main.log.debug("Main.main: error loading properties file: " + args[0]);
             e.printStackTrace();
             System.exit(1);
         }
@@ -73,11 +74,10 @@ public class Main {
         }
         catch(InterruptedException e)
         {
-            log.debug("Main.main: main thread interrupted");
-            e.printStackTrace();
+            log.error("Main.main: main thread interrupted", e);
         }
         log.debug("Main.main: main thread run is over");
 
-        log.debug("Main.main: end");
+        log.info("Main.main: end");
     }
 }
