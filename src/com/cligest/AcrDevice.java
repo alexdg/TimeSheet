@@ -20,7 +20,7 @@ public class AcrDevice {
 
     public static final int RFID_READERS = 2; // you need 2 of them for this app to work.
 
-    public static final int WAIT_FOR_CARD_PRESENT_MS = 500;
+    public static       int WAIT_FOR_CARD_PRESENT_MS = 500; // default
     public static final int WAIT_FOR_CARD_ABSENT_MS = 5000;
 
     public static final byte[] APDU_BUZZER_OFF = {(byte) 0xFF, (byte) 0x00, (byte) 0x52, (byte) 0x00, (byte) 0x00};
@@ -42,12 +42,22 @@ public class AcrDevice {
 
     private boolean[] sendBuzzerOff = {false, false}; // 2 readers, 2 buzzer flags
 
+    public AcrDevice() {
+        loadProperties();
+    }
+
     public static String convertToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
         }
         return sb.toString();
+    }
+
+    public void loadProperties() {
+        System.out.println("AcrDevice.loadProperties");
+
+        WAIT_FOR_CARD_PRESENT_MS = Integer.parseInt(Main.properties.getProperty("WAIT_FOR_CARD_PRESENT_MS"));
     }
 
     public void getAvailableTerminals() {

@@ -1,7 +1,5 @@
 package com.cligest;
 
-import com.sun.security.auth.NTSidGroupPrincipal;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -11,14 +11,14 @@ import java.awt.event.WindowEvent;
 
 public class TimeSheetGui {
 
-    public static final long                                 TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = 2500;
+    public static long                                 TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = 2500;
 
-    public static final String                               IMAGE_FILESYSTEM_PATH = "/home/pi/Pictures";
-    public static final int                                  IMAGE_WIDTH = 1024;
-    public static final int                                  IMAGE_HEIGHT = 1024;
+    public static String                               IMAGE_FILESYSTEM_PATH = "/home/pi/Pictures";
+    public static int                                  IMAGE_WIDTH = 1024;
+    public static int                                  IMAGE_HEIGHT = 1024;
     public static final com.hopding.jrpicam.enums.Exposure   IMAGE_EXPOSURE = Exposure.AUTO;
-    public static final int                                  IMAGE_TIMEOUT = 2;
-    public static final int                                  IMAGE_BRIGHTNESS = 50; // default
+    public static int                                  IMAGE_TIMEOUT_MS = 2;
+    public static int                                  IMAGE_BRIGHTNESS = 50;
 
 
     RPiCamera piCamera;
@@ -30,6 +30,9 @@ public class TimeSheetGui {
     private JTextField jTextFieldTitle, jTextFieldEmployeeName, jTextFieldDateTime;
 
     public TimeSheetGui () {
+        System.out.println("TimeSheetGui.TimeSheetGui: constructor");
+        loadProperties();
+
         jFrame = new JFrame("TimeSheet");
 
 
@@ -64,6 +67,17 @@ public class TimeSheetGui {
         prepCamera();
 
         jFrame.setVisible(true);
+    }
+
+    public void loadProperties() {
+        System.out.println("TimeSheetGui.loadProperties");
+
+        TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = Long.parseLong(Main.properties.getProperty("TIME_TO_WAIT_UNTIL_NEXT_CARD_MS"));
+        IMAGE_FILESYSTEM_PATH = Main.properties.getProperty("IMAGE_FILESYSTEM_PATH");
+        IMAGE_WIDTH = Integer.parseInt(Main.properties.getProperty("IMAGE_WIDTH"));
+        IMAGE_HEIGHT = Integer.parseInt(Main.properties.getProperty("IMAGE_HEIGHT"));
+        IMAGE_TIMEOUT_MS = Integer.parseInt(Main.properties.getProperty("IMAGE_TIMEOUT_MS"));
+        IMAGE_BRIGHTNESS = Integer.parseInt(Main.properties.getProperty("IMAGE_BRIGHTNESS"));
     }
 
     public void setTitle (String newTitle) {
@@ -126,6 +140,6 @@ public class TimeSheetGui {
         piCamera.setHeight(IMAGE_HEIGHT);
         piCamera.setBrightness(IMAGE_BRIGHTNESS);
         piCamera.setExposure(IMAGE_EXPOSURE);
-        piCamera.setTimeout(IMAGE_TIMEOUT);
+        piCamera.setTimeout(IMAGE_TIMEOUT_MS);
     }
 }
