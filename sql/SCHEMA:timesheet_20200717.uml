@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>9fd1bd78-7cf4-4222-8895-51f196bad0de.SCHEMA:timesheet</OriginalElement>
+  <nodes>
+    <node x="347.0" y="75.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.employees</node>
+    <node x="0.0" y="170.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.actions</node>
+    <node x="138.00000000000003" y="0.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.locations</node>
+    <node x="139.00000000000003" y="159.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.timesheet_devices</node>
+    <node x="129.00000000000003" y="396.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_action</node>
+    <node x="608.0" y="158.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.card_states</node>
+    <node x="475.53571428571433" y="396.0">9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_state</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_action" target="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.actions">
+      <point x="-55.0" y="-81.5" />
+      <point x="159.50000000000003" y="293.0" />
+      <point x="59.5" y="293.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_action" target="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.employees">
+      <point x="55.0" y="-81.5" />
+      <point x="269.5" y="293.0" />
+      <point x="360.25" y="293.0" />
+      <point x="-50.25" y="60.0" />
+    </edge>
+    <edge source="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_state" target="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.employees">
+      <point x="-33.75" y="-81.5" />
+      <point x="505.28571428571433" y="293.0" />
+      <point x="460.75" y="293.0" />
+      <point x="50.25" y="60.0" />
+    </edge>
+    <edge source="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_action" target="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.timesheet_devices">
+      <point x="0.0" y="-81.5" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.log_card_state" target="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.card_states">
+      <point x="33.75" y="-81.5" />
+      <point x="572.7857142857143" y="293.0" />
+      <point x="616.0" y="293.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.timesheet_devices" target="9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.locations">
+      <point x="0.0" y="-49.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="350.5" y="240.5" />
+  <SelectedNodes>
+    <node>9fd1bd78-7cf4-4222-8895-51f196bad0de.TABLE:timesheet.employees</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

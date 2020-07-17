@@ -8,17 +8,21 @@ import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 public class TimeSheetGui {
 
+
     public static long                                 TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = 2500;
 
-    public static String                               IMAGE_FILESYSTEM_PATH = "/home/pi/Pictures";
+    public static String                               IMAGE_FILESYSTEM_LOCAL_PATH = "/home/pi/Pictures";
+    public static String                               IMAGE_FILESYSTEM_REMOTE_PATH = "/home/pi/Pictures_Backup";
     public static int                                  IMAGE_WIDTH = 1024;
     public static int                                  IMAGE_HEIGHT = 1024;
     public static final com.hopding.jrpicam.enums.Exposure   IMAGE_EXPOSURE = Exposure.AUTO;
     public static int                                  IMAGE_TIMEOUT_MS = 2;
     public static int                                  IMAGE_BRIGHTNESS = 50;
+    public static int                                  IMAGE_ROTATION = 0;
 
 
     RPiCamera piCamera;
@@ -73,11 +77,13 @@ public class TimeSheetGui {
         Main.log.debug("TimeSheetGui.loadProperties");
 
         TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = Long.parseLong(Main.properties.getProperty("TIME_TO_WAIT_UNTIL_NEXT_CARD_MS"));
-        IMAGE_FILESYSTEM_PATH = Main.properties.getProperty("IMAGE_FILESYSTEM_PATH");
+        IMAGE_FILESYSTEM_LOCAL_PATH = Main.properties.getProperty("IMAGE_FILESYSTEM_LOCAL_PATH");
+        IMAGE_FILESYSTEM_REMOTE_PATH = Main.properties.getProperty("IMAGE_FILESYSTEM_REMOTE_PATH");
         IMAGE_WIDTH = Integer.parseInt(Main.properties.getProperty("IMAGE_WIDTH"));
         IMAGE_HEIGHT = Integer.parseInt(Main.properties.getProperty("IMAGE_HEIGHT"));
         IMAGE_TIMEOUT_MS = Integer.parseInt(Main.properties.getProperty("IMAGE_TIMEOUT_MS"));
         IMAGE_BRIGHTNESS = Integer.parseInt(Main.properties.getProperty("IMAGE_BRIGHTNESS"));
+        IMAGE_ROTATION = Integer.parseInt(Main.properties.getProperty("IMAGE_ROTATION"));
     }
 
     public void setTitle (String newTitle) {
@@ -124,11 +130,19 @@ public class TimeSheetGui {
         } catch (Exception e) {
             Main.log.error("TimeSheetGui.takePhoto: error", e);
         }
+
+        // now copy it to remote location
+        try {
+            Runtime.getRuntime().exec("cp " + IMAGE_FILESYSTEM_LOCAL_PATH + "/" + filename + ".jpg " +
+                    IMAGE_FILESYSTEM_REMOTE_PATH + "/" + filename + ".jpg");
+        } catch (IOException e) {
+            Main.log.error("TimeSheetGui.takePhoto: error copying file to remote location", e);
+        }
     }
 
     public void prepCamera() {
         try {
-            piCamera = new RPiCamera(IMAGE_FILESYSTEM_PATH);
+            piCamera = new RPiCamera(IMAGE_FILESYSTEM_LOCAL_PATH);
         } catch (FailedToRunRaspistillException e) {
             Main.log.error("TimeSheetGui.prepCamera: no camera", e);
         }
@@ -138,5 +152,6 @@ public class TimeSheetGui {
         piCamera.setBrightness(IMAGE_BRIGHTNESS);
         piCamera.setExposure(IMAGE_EXPOSURE);
         piCamera.setTimeout(IMAGE_TIMEOUT_MS);
+        piCamera.setRotation(IMAGE_ROTATION);
     }
 }
