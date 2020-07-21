@@ -1,5 +1,7 @@
 package com.cligest;
 
+import org.hibernate.dialect.Database;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,6 +18,7 @@ public class RFIDPollingThread implements Runnable {
     private TimeSheetGui timeSheetGui;
     private int readerID;
     private AcrDevice readerDevices;
+    private String action;
 
     public RFIDPollingThread (TimeSheetGui tsGui, int rID, AcrDevice rDevices) {
         this.loadProperties();
@@ -26,9 +29,19 @@ public class RFIDPollingThread implements Runnable {
         readerID  = rID;
         readerDevices = rDevices;
 
+        // set Action string
+        if (readerID == READER_ENTERING) {
+            // employee is entering
+            action = "ENTERING";
+        } else {
+            // employee is exiting
+            action = "EXITING";
+        }
+
         Main.log.debug("RFIDPollingThread.RFIDPollingThread: created " + rID);
 
         thisThread.start();
+
     }
 
     private void loadProperties() {
@@ -50,7 +63,8 @@ public class RFIDPollingThread implements Runnable {
                     if (!timeSheetGui.isPausedState()) {
                         // we got a card ID
                         Main.log.debug("RFIDPollingThread.run: we got a card and system is not paused " + cardUID);
-                        processCard(cardUID);
+                        // chop off the last 4 chars
+                        processCard(cardUID.substring(0,8));
                     }
                 }
             }
@@ -65,25 +79,20 @@ public class RFIDPollingThread implements Runnable {
 
     private void processCard (String cardUID) {
         // check with database that card is valid
+        Main.log.info("RFIDPollingThread.processCard called with cardUID=" + cardUID);
 
-
-        // temporary code
-        timeSheetGui.setEmployeeName(cardUID);
-
-        String action = null;
-        if (readerID == READER_ENTERING) {
-            // employee is entering
-            action = "ENTERING";
+        if (DatabaseLib.isCardValid(cardUID)) {
+            // temporary GUI code
+            timeSheetGui.setEmployeeName(cardUID);
 
             timeSheetGui.setTitle(action);
-        } else {
-            // employee is exiting
-            action = "EXITING";
-        }
-        timeSheetGui.setTitle(action);
 
-        // take a photo
-        timeSheetGui.takePhoto(cardUID + "_" + action + "_" + (new SimpleDateFormat(DATE_FORMAT)).format(new Date()));
+            // take a photo
+            timeSheetGui.takePhoto(cardUID + "_" + action + "_" + (new SimpleDateFormat(DATE_FORMAT)).format(new Date()));
+        } else {
+            // temporary GUI code
+            timeSheetGui.setTitle("INVALID");
+        }
 
         timeSheetGui.pauseForNextCard();
     }

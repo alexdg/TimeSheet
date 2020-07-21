@@ -69,6 +69,4 @@
 
     <target name="all" depends="build,distribution"/>
 
-
-
 </project>

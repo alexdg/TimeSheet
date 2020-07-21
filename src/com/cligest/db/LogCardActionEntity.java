@@ -1,14 +1,12 @@
 package com.cligest.db;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 @Table(name = "log_card_action", schema = "timesheet", catalog = "")
+@IdClass(LogCardActionEntityPK.class)
 public class LogCardActionEntity {
     private String idCard;
     private int idEmployee;
@@ -17,7 +15,7 @@ public class LogCardActionEntity {
     private int idAction;
     private String imageFile;
 
-    @Basic
+    @Id
     @Column(name = "id_card")
     public String getIdCard() {
         return idCard;
@@ -37,7 +35,7 @@ public class LogCardActionEntity {
         this.idEmployee = idEmployee;
     }
 
-    @Basic
+    @Id
     @Column(name = "datetime")
     public Timestamp getDatetime() {
         return datetime;
