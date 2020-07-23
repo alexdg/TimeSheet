@@ -8,7 +8,11 @@ import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.io.IOException;
+
+
+
 
 public class TimeSheetGui {
 
@@ -24,6 +28,10 @@ public class TimeSheetGui {
     public static int                                  IMAGE_BRIGHTNESS = 50;
     public static int                                  IMAGE_ROTATION = 0;
 
+    public static String                                  SOUND_ENTERING;
+    public static String                                  SOUND_EXITING;
+    public static String                                  SOUND_INVALID_CARD;
+    public static String                                  SOUND_REPEAT_WARNING;
 
     RPiCamera piCamera;
 
@@ -33,12 +41,12 @@ public class TimeSheetGui {
     private JPanel jPanel;
     private JTextField jTextFieldTitle, jTextFieldEmployeeName, jTextFieldDateTime;
 
+
     public TimeSheetGui () {
         Main.log.debug("TimeSheetGui.TimeSheetGui: constructor");
         loadProperties();
 
         jFrame = new JFrame("TimeSheet");
-
 
         jFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent){
@@ -84,6 +92,10 @@ public class TimeSheetGui {
         IMAGE_TIMEOUT_MS = Integer.parseInt(Main.properties.getProperty("IMAGE_TIMEOUT_MS"));
         IMAGE_BRIGHTNESS = Integer.parseInt(Main.properties.getProperty("IMAGE_BRIGHTNESS"));
         IMAGE_ROTATION = Integer.parseInt(Main.properties.getProperty("IMAGE_ROTATION"));
+        SOUND_ENTERING = Main.properties.getProperty("SOUND_ENTERING");
+        SOUND_EXITING = Main.properties.getProperty("SOUND_EXITING");
+        SOUND_INVALID_CARD = Main.properties.getProperty("SOUND_INVALID_CARD");
+        SOUND_REPEAT_WARNING = Main.properties.getProperty("SOUND_REPEAT_WARNING");
     }
 
     public void setTitle (String newTitle) {
@@ -98,13 +110,18 @@ public class TimeSheetGui {
         jTextFieldDateTime.setText(newTitle);
     }
 
-    public void pauseForNextCard() {
+    public void setPauseForNextCard() {
         setPausedState(true);
+    }
+
+    public void pauseForNextCard() {
         try {
             Thread.sleep(TIME_TO_WAIT_UNTIL_NEXT_CARD_MS);
+
         } catch (InterruptedException e) {
             Main.log.error("TimeSheetGui.pauseForNextCard: error", e);
         }
+
         clearScreen();
         setPausedState(false);
     }
@@ -153,5 +170,16 @@ public class TimeSheetGui {
         piCamera.setExposure(IMAGE_EXPOSURE);
         piCamera.setTimeout(IMAGE_TIMEOUT_MS);
         piCamera.setRotation(IMAGE_ROTATION);
+        piCamera.setFullPreviewOff();
+        piCamera.setPreviewFullscreen(false);
+        piCamera.turnOffPreview();
+    }
+
+    public void playSound(String sound) {
+        try {
+            Runtime.getRuntime().exec("aplay -q " + sound);
+        } catch (Exception e) {
+            Main.log.error("Sound error file: " + sound, e);
+        }
     }
 }

@@ -4,8 +4,11 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url">jdbc:mysql://192.168.100.25:3306/timesheet</property>
+    <property name="connection.url">jdbc:mysql://192.168.100.25:3306/timesheet?autoReconnect=true</property>
     <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="connection.username">timesheet</property>
+    <property name="connection.password">y6n6lLvwet410R9a</property>
     <mapping class="com.cligest.db.ActionsEntity"/>
     <mapping class="com.cligest.db.CardStatesEntity"/>
     <mapping class="com.cligest.db.EmployeesEntity"/>

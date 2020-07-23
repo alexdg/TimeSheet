@@ -1,7 +1,9 @@
 package com.cligest;
 
+import net.bytebuddy.asm.Advice;
 import org.hibernate.dialect.Database;
 
+import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,7 +20,6 @@ public class RFIDPollingThread implements Runnable {
     private TimeSheetGui timeSheetGui;
     private int readerID;
     private AcrDevice readerDevices;
-    private String action;
 
     public RFIDPollingThread (TimeSheetGui tsGui, int rID, AcrDevice rDevices) {
         this.loadProperties();
@@ -28,15 +29,6 @@ public class RFIDPollingThread implements Runnable {
         timeSheetGui = tsGui;
         readerID  = rID;
         readerDevices = rDevices;
-
-        // set Action string
-        if (readerID == READER_ENTERING) {
-            // employee is entering
-            action = "ENTERING";
-        } else {
-            // employee is exiting
-            action = "EXITING";
-        }
 
         Main.log.debug("RFIDPollingThread.RFIDPollingThread: created " + rID);
 
@@ -81,19 +73,41 @@ public class RFIDPollingThread implements Runnable {
         // check with database that card is valid
         Main.log.info("RFIDPollingThread.processCard called with cardUID=" + cardUID);
 
-        if (DatabaseLib.isCardValid(cardUID)) {
-            // temporary GUI code
-            timeSheetGui.setEmployeeName(cardUID);
+        // set pause the system
+        timeSheetGui.setPauseForNextCard();
 
-            timeSheetGui.setTitle(action);
-
-            // take a photo
-            timeSheetGui.takePhoto(cardUID + "_" + action + "_" + (new SimpleDateFormat(DATE_FORMAT)).format(new Date()));
+        int action;
+        String sound;
+        if (readerID == READER_ENTERING) {
+            action =1;
+            sound = TimeSheetGui.SOUND_ENTERING;
         } else {
-            // temporary GUI code
-            timeSheetGui.setTitle("INVALID");
+            action= 3;
+            sound = TimeSheetGui.SOUND_EXITING;
         }
 
+        // take a photo
+        Date date = new Date();
+        String photoFilename = cardUID + "_" + (new SimpleDateFormat(DATE_FORMAT)).format(date);
+        timeSheetGui.takePhoto(photoFilename);
+
+        int employeeID = -1; // look employees table for reference
+
+        if (DatabaseLib.isCardValid(cardUID)) {
+            // valid card
+            employeeID = DatabaseLib.getEmployeeID(cardUID);
+        } else {
+            // invalid card
+            action++;  // look at the actions table for reference
+            sound = timeSheetGui.SOUND_INVALID_CARD;
+
+        }
+
+        DatabaseLib.logCardAction(cardUID, employeeID, date, Main.DEVICE_ID, action, photoFilename );
+
+        timeSheetGui.setEmployeeName(DatabaseLib.getEmployeeName(employeeID));
+        timeSheetGui.setTitle(DatabaseLib.getAction(action));
+        timeSheetGui.playSound(sound);
         timeSheetGui.pauseForNextCard();
     }
 

@@ -17,6 +17,17 @@ public class Main {
     public static int MAIN_THREAD_SLEEP_MS = 1500; // default
     public static int DEVICE_ID = 0;
 
+    public static RFIDPollingThread r1, r2;
+
+    static {
+        try {
+            Class.forName("com.cligest.DatabaseLib");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
     public static void loadPropertiesFile(String filename) throws IOException {
         properties = new Properties();
         properties.load(new FileInputStream(filename));
@@ -56,15 +67,11 @@ public class Main {
         devices.turnOffBuzzer(RFIDPollingThread.READER_ENTERING);
         devices.turnOffBuzzer(RFIDPollingThread.READER_EXITING);
 
-        // simple test
-        // devices.getCardUID(0);
-        // devices.getCardUID(1);
-
         // show GUI
         TimeSheetGui timeSheetGui = new TimeSheetGui();
 
         // set Threads
-        RFIDPollingThread r1 = new RFIDPollingThread(timeSheetGui, RFIDPollingThread.READER_ENTERING, devices);
+        r1  = new RFIDPollingThread(timeSheetGui, RFIDPollingThread.READER_ENTERING, devices);
 
         RFIDPollingThread r2 = new RFIDPollingThread(timeSheetGui, RFIDPollingThread.READER_EXITING, devices);
 
