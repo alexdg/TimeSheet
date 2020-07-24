@@ -46,7 +46,8 @@ public class DatabaseLib {
         String hql = "from LogCardStateEntity p where p.idCard = :idcard order by p.datetime desc";
 
         try {
-            logCardStateEntity = session.createQuery(hql, LogCardStateEntity.class).setParameter("idcard",cardUID).getResultList().get(0);
+            logCardStateEntity = session.createQuery(hql, LogCardStateEntity.class).setParameter("idcard",cardUID)
+                    .getResultList().get(0);
             if( logCardStateEntity.getCardState() == 1) {
                 // card is active
                 result = true;
@@ -73,7 +74,8 @@ public class DatabaseLib {
         LogCardStateEntity logCardStateEntity = null;
 
         String hql = "from LogCardStateEntity p where p.idCard = :idcard order by p.datetime desc";
-        logCardStateEntity = session.createQuery(hql, LogCardStateEntity.class).setParameter("idcard",cardUID).getResultList().get(0);
+        logCardStateEntity = session.createQuery(hql, LogCardStateEntity.class).setParameter("idcard",cardUID).
+                getResultList().get(0);
 
         return logCardStateEntity.getIdEmployee();
     }
@@ -86,7 +88,8 @@ public class DatabaseLib {
     public static void logCardAction(String cardUID, int employeeID, Date date, int deviceId, int action, String photoFilename) {
         getSession();
 
-        Main.log.info("logCardAction called: cardUID = " + cardUID + ", employeeID = " + employeeID + ", date = " + date + ", deviceId = " + deviceId + ", action = " + action + ", photoFilename = " + photoFilename);
+        Main.log.info("logCardAction called: cardUID = " + cardUID + ", employeeID = " + employeeID + ", date = "
+                + date + ", deviceId = " + deviceId + ", action = " + action + ", photoFilename = " + photoFilename);
 
         Transaction tx = session.beginTransaction();
         LogCardActionEntity logCardActionEntity = new LogCardActionEntity();
@@ -98,5 +101,25 @@ public class DatabaseLib {
         logCardActionEntity.setImageFile(photoFilename);
         session.save(logCardActionEntity);
         tx.commit();
+    }
+
+    public static Date getLastAction(int employeeID, int action) {
+        getSession();
+
+        Date datetime = null;
+
+        String hql = "from LogCardActionEntity p where p.idEmployee = :employee_id and p.idAction = :action_id "
+            + " order by p.datetime desc";
+
+        try {
+            LogCardActionEntity logCardActionEntity = session.createQuery(hql, LogCardActionEntity.class).
+                    setParameter("employee_id", employeeID).setParameter("action_id", action).getResultList().get(0);
+            datetime = logCardActionEntity.getDatetime();
+        } catch (Exception e) {
+            // not date found
+            Main.log.error("getLastEntry : " + employeeID + " exited without ever entering");
+        }
+
+        return datetime;
     }
 }

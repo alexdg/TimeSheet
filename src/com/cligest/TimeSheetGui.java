@@ -16,7 +16,6 @@ import java.io.IOException;
 
 public class TimeSheetGui {
 
-
     public static long                                 TIME_TO_WAIT_UNTIL_NEXT_CARD_MS = 2500;
 
     public static String                               IMAGE_FILESYSTEM_LOCAL_PATH = "/home/pi/Pictures";
@@ -28,10 +27,11 @@ public class TimeSheetGui {
     public static int                                  IMAGE_BRIGHTNESS = 50;
     public static int                                  IMAGE_ROTATION = 0;
 
-    public static String                                  SOUND_ENTERING;
-    public static String                                  SOUND_EXITING;
-    public static String                                  SOUND_INVALID_CARD;
-    public static String                                  SOUND_REPEAT_WARNING;
+    public static String                               SOUND_ENTERING;
+    public static String                               SOUND_EXITING;
+    public static String                               SOUND_INVALID_CARD;
+    public static String                               SOUND_REPEAT_WARNING;
+    public static String                               SOUND_EXIT_WITHOUT_ENTER;
 
     RPiCamera piCamera;
 
@@ -39,7 +39,8 @@ public class TimeSheetGui {
 
     private JFrame jFrame;
     private JPanel jPanel;
-    private JTextField jTextFieldTitle, jTextFieldEmployeeName, jTextFieldDateTime;
+    private JTextField jTextFieldTitle, jTextFieldEmployeeName;
+    private JTextArea jTextAreaDateTime;
 
 
     public TimeSheetGui () {
@@ -63,12 +64,13 @@ public class TimeSheetGui {
         jTextFieldEmployeeName = new JTextField();
         jTextFieldEmployeeName.setEditable(false);
 
-        jTextFieldDateTime = new JTextField();
-        jTextFieldDateTime.setEditable(false);
+        jTextAreaDateTime = new JTextArea();
+        jTextAreaDateTime.setEditable(false);
+        jTextAreaDateTime.setLineWrap(true);
 
         jPanel.add(jTextFieldTitle);
         jPanel.add(jTextFieldEmployeeName);
-        jPanel.add(jTextFieldDateTime);
+        jPanel.add(jTextAreaDateTime);
 
         jFrame.setContentPane(jPanel);
         jFrame.pack();
@@ -96,6 +98,7 @@ public class TimeSheetGui {
         SOUND_EXITING = Main.properties.getProperty("SOUND_EXITING");
         SOUND_INVALID_CARD = Main.properties.getProperty("SOUND_INVALID_CARD");
         SOUND_REPEAT_WARNING = Main.properties.getProperty("SOUND_REPEAT_WARNING");
+        SOUND_EXIT_WITHOUT_ENTER = Main.properties.getProperty("SOUND_EXIT_WITHOUT_ENTER");
     }
 
     public void setTitle (String newTitle) {
@@ -107,7 +110,7 @@ public class TimeSheetGui {
     }
 
     public void setDateTime (String newTitle) {
-        jTextFieldDateTime.setText(newTitle);
+        jTextAreaDateTime.setText(newTitle);
     }
 
     public void setPauseForNextCard() {
