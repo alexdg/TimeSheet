@@ -2,6 +2,9 @@
   <library name="jrpicam-1.1.1">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/jrpicam-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/c3p0-0.9.5.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mchange-commons-java-0.2.19.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/hibernate-c3p0-5.4.18.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

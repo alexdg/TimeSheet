@@ -48,7 +48,7 @@ public class DatabaseLib {
         try {
             logCardStateEntity = session.createQuery(hql, LogCardStateEntity.class).setParameter("idcard",cardUID)
                     .getResultList().get(0);
-            if( logCardStateEntity.getCardState() == 1) {
+            hif( logCardStateEntity.getCardState() == 1) {
                 // card is active
                 result = true;
                 Main.log.info("DatabaseLib.isCardValid card is active");
